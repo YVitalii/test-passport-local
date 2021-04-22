@@ -115,6 +115,44 @@ describe("users",function() {
     });//it
   });//describe("#findByUsername(username,cb)"
 
+  // // ---------  verifyUser(username,password,cb) --------------------------
+  describe("#verifyUser(username,password,cb)", function () {
+    it('при несуществующем username=undefined → ошибка',function(done){
+      let username=undefined,password=undefined;
+      users.verifyUser(username, password, (err,data) => {
+        if (err) {done(); return };
+        done(data);
+        return
+      }); // verifyUser
+    });//it
+    it('при несуществующем username=wrong → ошибка',function(done){
+      let username="wrong",password=undefined;
+      users.verifyUser(username, password, (err,data) => {
+        if (err) {done();  return };
+        done(data);
+        return
+      }); // verifyUser
+    });//it
+    it('при неправильном пароле и существующем username=admin:passport=wrong → ошибка',function(done){
+      let username="admin",password="wrong";
+      users.verifyUser(username, password, (err,data) => {
+        if (err) {done();  return };
+        done(data);
+        return
+      }); // verifyUser
+    });//it
+    it('при правильном пароле и существующем username=Гость:passport=12345 → пользователь',function(done){
+      let username="Гость",password="12345";
+      users.verifyUser(username, password, (err,data) => {
+        if (err) {done(err);   return };
+        assert.equal(data.username, username);
+        done();
+        return
+      }); // verifyUser
+    });//it
+
+
+  }); //
   // // ---------  deleteUser(id,cb(err,data)) --------------------------
   describe("#deleteUser(username,cb)", function () {
 

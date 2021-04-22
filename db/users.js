@@ -177,7 +177,11 @@ loadRecords()
 /** поиск по имени пользователя */
 exports.findByUsername = function(username, cb) {
   process.nextTick(function() {
-    if (records[username]) { cb(null, records[username]); return}
+    if (records[username]) {
+      //console.dir(records[username]);
+      cb(null, records[username]);
+      return
+    }
     let err=new Err({
                  en:'User "' + username + '" does not exist.'
                 ,ru:'Пользователь "'+ username +'" не существует.'
@@ -336,13 +340,43 @@ function deleteUser(username,cb) {
 };//deleteUser(id,cb)
 exports.deleteUser=deleteUser;
 
+function verifyUser(username,password,cb){
+  this.findByUsername(username, (err, user) => {
+    if (err) { cb(err,null); return };
+    // console.log("User finded user=");
+    // console.dir(user);
+    bcrypt.compare(password,user.password, (error,res) => {
+      if (res) {
+        // res=true пароль правильный
+        // console.log("bcrypt.Password is Ok");
+        cb(null,user);
+        return };
+      // res=false пароль неправильный
+      // console.log("bcrypt. Password is Wrong");
+      let suff=" user='"+username.path+"'";
+      let err=new Err({
+                   en:"Wrong password for "+suff
+                  ,ru:'Неправильный пароль '+suff
+                  ,ua:"Невірний пароль"+suff
+                });
+     cb (err,null);
+     return
+   });//bcrypt.compare
+  }); //findByUsername
+};//function verifyUser
+exports.verifyUser=verifyUser;
+
 if (! module.parent) {
-  let title="testing: ";
-  this.addNewUser({},(err,data) => {
-    log("i",title,"err=",err);
-    log("i",title,"data=",data);
-    if (err) {log("e",title,err.ru);};
-  });
+  // let users=this;
+  // let mocha=require('mocha.js');
+  // mocha('./users_test.js');
+
+  // let title="testing: ";
+  // this.addNewUser({},(err,data) => {
+  //   log("i",title,"err=",err);
+  //   log("i",title,"data=",data);
+  //   if (err) {log("e",title,err.ru);};
+  // });
   // testing
   //const users=new User();
   // const users=[
