@@ -2,7 +2,7 @@ var express = require('express');
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
 var db = require('./db');
-
+var passport = require('./tools/passport-loc.js');
 
 // Configure the local strategy for use by Passport.
 //
@@ -10,17 +10,17 @@ var db = require('./db');
 // (`username` and `password`) submitted by the user.  The function must verify
 // that the password is correct and then invoke `cb` with a user object, which
 // will be set at `req.user` in route handlers after authentication.
-passport.use(new Strategy(
-  function(username, password, cb) {
-    console.log("===========================");
-    console.log("new Strategy("+username+","+password+"); ");
-    db.users.findByUsername(username, function(err, user) {
-      if (err) { return cb(err); }
-      if (!user) { return cb(null, false); }
-      if (user.password != password) { return cb(null, false); }
-      return cb(null, user);
-    });
-  }));
+// passport.use(new Strategy(
+//   function(username, password, cb) {
+//     console.log("===========================");
+//     console.log("new Strategy("+username+","+password+"); ");
+//     db.users.findByUsername(username, function(err, user) {
+//       if (err) { return cb(err); }
+//       if (!user) { return cb(null, false); }
+//       if (user.password != password) { return cb(null, false); }
+//       return cb(null, user);
+//     });
+//   }));
 
 
 // Configure Passport authenticated session persistence.
@@ -30,18 +30,18 @@ passport.use(new Strategy(
 // typical implementation of this is as simple as supplying the user ID when
 // serializing, and querying the user record by ID from the database when
 // deserializing.
-passport.serializeUser(function(user, cb) {
-  console.log("==>serializeUser("+user.name+")");
-  cb(null, user.id);
-});
-
-passport.deserializeUser(function(id, cb) {
-  console.log("==>deserializeUser("+id+")");
-  db.users.findById(id, function (err, user) {
-    if (err) { return cb(err); }
-    cb(null, user);
-  });
-});
+// passport.serializeUser(function(user, cb) {
+//   console.log("==>serializeUser("+user.name+")");
+//   cb(null, user.id);
+// });
+//
+// passport.deserializeUser(function(id, cb) {
+//   console.log("==>deserializeUser("+id+")");
+//   db.users.findById(id, function (err, user) {
+//     if (err) { return cb(err); }
+//     cb(null, user);
+//   });
+// });
 
 
 

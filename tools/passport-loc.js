@@ -10,8 +10,8 @@ const users = require('../db/users.js');
 // will be set at `req.user` in route handlers after authentication.
 passport.use(new Strategy(
   function(username, password, cb) {
-    console.log("=========================================");
-    console.log("new Strategy("+username+","+password+"); ");
+    //console.log("=========================================");
+    //console.log("new Strategy("+username+","+password+"); ");
     users.verifyUser(username, password, function(err, user) {
       if (err) { return cb(err); }
       if (!user) { return cb(null, false); }
@@ -27,14 +27,16 @@ passport.use(new Strategy(
   // serializing, and querying the user record by ID from the database when
   // deserializing.
   passport.serializeUser(function(user, cb) {
-    console.log("==>serializeUser("+user.name+")");
+    //console.log("==>serializeUser("+user.name+")");
     cb(null, user.username);
   });
 
   passport.deserializeUser(function(username, cb) {
-    console.log("==>deserializeUser("+id+")");
+    //console.log("==>deserializeUser("+username+")");
     users.findByUsername(username, function (err, user) {
       if (err) { return cb(err); }
       cb(null, user);
     });
   });
+
+module.exports=passport;
